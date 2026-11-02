@@ -1,0 +1,608 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Підхід</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Підхід">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Sans+Extra+Condensed:wght@600;700&family=Manrope:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<style>
+/* Layout: one-column phone app, steel-grey ground, days colour-coded like bumper plates (red/yellow/blue/green), fixed bottom tab bar. */
+:root{
+  --bg:#ECEFF2; --surface:#FFFFFF; --surface-2:#E1E6EB; --fg:#13171C; --muted:#5A6571; --line:#CCD3DA;
+  --red:#CF2F28; --yellow:#D9A100; --blue:#1D58D2; --green:#18925A;
+  --good:#18925A; --warn:#B7791F;
+  --font-display:"Fira Sans Extra Condensed","Arial Narrow",system-ui,sans-serif;
+  --font-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,monospace;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1115; --surface:#161A20; --surface-2:#1F252D; --fg:#EDF0F3; --muted:#8B96A2; --line:#2A3139;
+  --red:#F0554C; --yellow:#F2C230; --blue:#5B8DF6; --green:#38BC78; --good:#38BC78; --warn:#E0A84A; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0E1115; --surface:#161A20; --surface-2:#1F252D; --fg:#EDF0F3; --muted:#8B96A2; --line:#2A3139;
+  --red:#F0554C; --yellow:#F2C230; --blue:#5B8DF6; --green:#38BC78; --good:#38BC78; --warn:#E0A84A; color-scheme:dark }
+
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--fg);font-family:var(--font-body);font-size:15px;line-height:1.5;-webkit-tap-highlight-color:transparent}
+.wrap{max-width:560px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:18px calc(96px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:18px}
+h1,h2,h3{font-family:var(--font-display);font-weight:700;letter-spacing:.01em;line-height:1.05;margin:0;text-wrap:balance}
+h1{font-size:34px;text-transform:uppercase}
+h2{font-size:24px;text-transform:uppercase}
+h3{font-size:19px}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.eyebrow{font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.mono{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.between{justify-content:space-between}
+.stack{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+button,select,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:10px 16px;font-weight:700;min-height:44px}
+.btn.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.btn.block{width:100%}
+.btn:disabled{opacity:.45;cursor:default}
+a.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:12px;font-weight:600;color:var(--muted);background:var(--surface)}
+.chip.ok{color:var(--good);border-color:color-mix(in srgb,var(--good) 45%,var(--line))}
+.chip.warn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 45%,var(--line))}
+
+/* top bar */
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
+.brand{font-family:var(--font-display);font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+
+/* plates */
+.plate{--c:var(--fg);width:46px;height:46px;flex:none;border-radius:50%;background:var(--c);display:grid;place-items:center;position:relative;color:#fff;font-family:var(--font-display);font-weight:700;font-size:17px}
+.plate::after{content:"";position:absolute;width:12px;height:12px;border-radius:50%;background:var(--bg);opacity:.0}
+.plate.sm{width:28px;height:28px;font-size:12px}
+.p1{--c:var(--red)} .p2{--c:var(--yellow)} .p3{--c:var(--blue)} .p4{--c:var(--green)}
+.p2{color:#13171C}
+.plate.hollow{background:transparent;border:2px dashed var(--line);color:var(--muted)}
+
+/* week strip */
+.week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px 0;border-radius:12px;background:var(--surface);border:1px solid var(--line);min-width:0}
+.wd.today{border-color:var(--fg)}
+.wd .l{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.dot{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:11px;font-weight:700}
+.dot.s1{border-color:var(--red)} .dot.s2{border-color:var(--yellow)} .dot.s3{border-color:var(--blue)} .dot.s4{border-color:var(--green)}
+.dot.done.s1{background:var(--red);color:#fff} .dot.done.s2{background:var(--yellow);color:#13171C} .dot.done.s3{background:var(--blue);color:#fff} .dot.done.s4{background:var(--green);color:#fff}
+
+/* day switch */
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.seg button{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:8px 4px;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:6px;min-height:44px}
+.seg button[aria-pressed="true"]{border-color:var(--fg);background:var(--surface-2)}
+
+/* exercise */
+.ex{display:flex;flex-direction:column;gap:10px;padding-block:14px;border-top:1px solid var(--line)}
+.ex:first-of-type{border-top:0;padding-top:0}
+.exhead{display:flex;gap:12px;align-items:flex-start}
+.tag{font-family:var(--font-mono);font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:6px;padding:2px 6px;color:var(--muted);flex:none;margin-top:2px}
+.exname{font-weight:700;font-size:16px;line-height:1.3}
+.target{font-family:var(--font-mono);font-size:13px;color:var(--muted)}
+.sets{display:flex;gap:8px;flex-wrap:wrap}
+.set{display:flex;flex-direction:column;align-items:center;gap:2px}
+.set input{width:58px;height:48px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);text-align:center;font-family:var(--font-mono);font-size:18px;font-weight:600;-moz-appearance:textfield}
+.set input::-webkit-outer-spin-button,.set input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.set input.filled{background:var(--surface);border-color:var(--fg)}
+.set span{font-size:10px;color:var(--muted);font-weight:600}
+details.tip summary{cursor:pointer;font-size:13px;color:var(--muted);font-weight:600;list-style:none}
+details.tip summary::-webkit-details-marker{display:none}
+details.tip summary::before{content:"+ "}
+details.tip[open] summary::before{content:"− "}
+details.tip p{font-size:13px;margin-top:6px}
+
+/* checklist */
+.check{display:flex;gap:12px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);cursor:pointer}
+.check:first-child{border-top:0}
+.check input{width:22px;height:22px;flex:none;accent-color:var(--fg);margin:1px 0 0}
+.check .t{font-weight:600}
+.check.done .t{text-decoration:line-through;color:var(--muted)}
+
+/* water */
+.glasses{display:flex;gap:6px;flex-wrap:wrap}
+.glass{width:30px;height:38px;border:2px solid var(--line);border-radius:4px 4px 8px 8px;background:transparent;padding:0;position:relative;overflow:hidden}
+.glass.full{border-color:var(--blue);background:color-mix(in srgb,var(--blue) 30%,transparent)}
+
+/* tables */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+td.num,th.num{text-align:right;font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+
+/* forms */
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--muted)}
+label.f input,label.f select{border:1px solid var(--line);background:var(--surface-2);border-radius:10px;padding:10px;font-size:16px;color:var(--fg);min-height:44px;width:100%}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.stat b{font-family:var(--font-display);font-size:28px;line-height:1}
+.stat span{font-size:12px;color:var(--muted)}
+
+svg text{fill:var(--muted);font-family:var(--font-mono);font-size:10px}
+
+/* tab bar */
+nav.tabs{position:fixed;left:0;right:0;bottom:0;z-index:20;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);padding-left:env(safe-area-inset-left,0px);padding-right:env(safe-area-inset-right,0px)}
+nav.tabs .in{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr)}
+nav.tabs a{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 2px 8px;text-decoration:none;color:var(--muted);font-size:11px;font-weight:700}
+nav.tabs a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs a[aria-current="page"]{color:var(--fg)}
+
+/* timer */
+.timer{position:fixed;left:0;right:0;bottom:calc(62px + env(safe-area-inset-bottom,0px));z-index:19;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.timer .in{max-width:528px;margin:0 auto;background:var(--fg);color:var(--bg);border-radius:16px;padding:10px 12px 10px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.timer .clock{font-family:var(--font-mono);font-size:26px;font-weight:600;flex:1}
+.timer button{border:1px solid color-mix(in srgb,var(--bg) 40%,transparent);background:transparent;color:var(--bg);border-radius:999px;padding:8px 12px;font-weight:700;font-size:13px;min-height:40px}
+.timer.end .in{background:var(--good);color:#fff}
+.restbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.restbar .btn{padding:8px 14px;min-height:40px;font-size:14px}
+
+.status{font-size:12px}
+.note{background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:14px}
+ol.steps{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+ul.plain{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:4px}
+.ladder{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13px}
+.ladder i{font-style:normal;color:var(--muted)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(14px + env(safe-area-inset-top,0px));z-index:30;background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-weight:700;font-size:14px}
+@media (prefers-reduced-motion: no-preference){.toast{animation:pop .2s ease-out}@keyframes pop{from{transform:translate(-50%,-8px);opacity:0}}}
+</style>
+</head>
+<body>
+
+<div class="wrap" id="app">
+  <div class="top">
+    <div class="stack" style="gap:4px">
+      <span class="brand">Підхід</span>
+      <h1 id="hdr">Сьогодні</h1>
+    </div>
+    <span class="chip status" id="sync">Завантаження…</span>
+  </div>
+  <main id="view" class="stack" style="gap:18px"></main>
+</div>
+
+<div class="timer" id="timer" hidden>
+  <div class="in">
+    <span class="clock" id="clock">01:00</span>
+    <button id="tplus" type="button">+15 с</button>
+    <button id="tstop" type="button">Стоп</button>
+  </div>
+</div>
+
+<nav class="tabs" aria-label="Розділи">
+  <div class="in">
+    <a href="#today" data-tab="today"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/></svg>Сьогодні</a>
+    <a href="#plan" data-tab="plan"><svg viewBox="0 0 24 24"><path d="M3 9h18M6 6v6M18 6v6M3 15h18M8 18v-6M16 18v-6"/></svg>План</a>
+    <a href="#progress" data-tab="progress"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M7 15l4-4 3 3 5-6"/></svg>Прогрес</a>
+    <a href="#food" data-tab="food"><svg viewBox="0 0 24 24"><path d="M4 12h16a8 8 0 0 1-16 0zM9 8c0-2 2-2 2-4M14 8c0-2 2-2 2-4"/></svg>Їжа</a>
+    <a href="#remind" data-tab="remind"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/></svg>Нагадування</a>
+  </div>
+</nav>
+
+<script>
+(() => {
+/* ---------------- Programme data ---------------- */
+const DAYS = {
+  1:{name:"Жим", sub:"груди · трицепс · прес", rest:"60–75 с", ex:[
+    {t:"A1",n:"Віджимання на упорах",s:4,r:"8–15",x:1,tip:"Корпус пряма лінія, лікті ~45° від тулуба, груди до рівня упорів.",pg:["з колін","звичайні","ноги на підвищенні","archer","з рюкзаком"]},
+    {t:"A2",n:"Планка",s:4,r:"30–45",u:"с",tip:"Сідниці і прес напружені, поперек не провисає. Вийшло 45 с легко: переходьте на hollow hold."},
+    {t:"B1",n:"Pike-віджимання (на плечі)",s:3,r:"6–10",x:1,tip:"Таз високо, голова йде вперед від рук, утворюючи трикутник.",pg:["pike","ноги на стільці","біля стіни"]},
+    {t:"B2",n:"Віджимання на брусах / між стільцями",s:3,r:"6–12",tip:"Опускайтесь до кута 90° у лікті, плечі не піднімайте до вух."},
+    {t:"C",n:"Діамантові віджимання",s:2,r:"макс−2",tip:"Долоні разом під грудьми. Зупиняйтесь за 2 повтори до відмови."}
+  ]},
+  2:{name:"Ноги і прес", sub:"квадрицепс · сідниці · кор", rest:"60–75 с", ex:[
+    {t:"A1",n:"Болгарські випади",s:3,r:"8–12/нога",x:1,tip:"Задня нога на стільці, коліно передньої йде за носком. З тижня 3 — рюкзак.",pg:["без ваги","рюкзак","гантелі","shrimp squat"]},
+    {t:"A2",n:"Підйоми ніг лежачи",s:3,r:"10–15",tip:"Поперек притиснутий до підлоги. Далі — підйоми колін у висі на турніку."},
+    {t:"B1",n:"Присідання з еспандером",s:3,r:"15–20",x:1,tip:"Еспандер під стопами, ручки біля плечей. Без еспандера — гоблет з рюкзаком."},
+    {t:"B2",n:"Ягодичний міст на одній нозі",s:3,r:"12/нога",tip:"Пауза 1 с угорі, таз рівний."},
+    {t:"C",n:"Бокова планка",s:2,r:"30/бік",u:"с",tip:"Лікоть під плечем, тіло в одну лінію."}
+  ]},
+  3:{name:"Тяга", sub:"спина · біцепс · постава", rest:"60–75 с", ex:[
+    {t:"A1",n:"Підтягування (з петлею / негативні)",s:4,r:"3–8",x:1,tip:"Немає чистого? Стрибніть угору і спускайтесь 5 с. Або петля під коліно.",pg:["вис","негативні 5 с","з петлею","чисті","з вагою"]},
+    {t:"A2",n:"Тяга петлі до обличчя (face pulls)",s:4,r:"15",tip:"Петля на рівні очей, лікті високо, лопатки разом. Головна вправа для постави."},
+    {t:"B1",n:"Австралійські підтягування",s:3,r:"8–12",x:1,tip:"Під столом або низькою перекладиною, тіло рівне, груди до краю."},
+    {t:"B2",n:"Згинання рук з петлею / гантелями",s:3,r:"10–12",tip:"Лікті притиснуті, повільний спуск 2–3 с."},
+    {t:"C",n:"Вис на турніку",s:2,r:"30–45",u:"с",tip:"Плечі активні, лопатки вниз. Розвантажує хребет після сидячого дня."}
+  ]},
+  4:{name:"Кругове", sub:"витривалість · все тіло", rest:"90 с між раундами", circuit:true, rounds:4, ex:[
+    {t:"1",n:"Бурпі",r:"8"},{t:"2",n:"Віджимання",r:"12"},{t:"3",n:"Присідання (з тижня 3 — з вистрибуванням)",r:"15"},
+    {t:"4",n:"Скелелаз",r:"30",u:"с"},{t:"5",n:"Австралійські підтягування",r:"10"}
+  ]}
+};
+const WARMUP = ["Кругові рухи плечима, 30 с","Кішка-корова, 8 разів","20 присідань","10 віджимань від стіни"];
+const COOLDOWN = ["Розтяжка грудей у дверях, 30 с","Згиначі стегна у випаді, 30 с/нога","Повороти грудного відділу, 10/бік"];
+const POSTURE = ["Розведення рук з петлею, 2×15","Розтяжка грудей у дверях, 2×30 с","Згиначі стегна у випаді, 2×30 с/нога","Повороти грудного відділу, 10/бік"];
+const PHASES = [
+  {n:"База",d:"Техніка. Закінчуйте підхід із запасом 2–3 повтори."},
+  {n:"Обсяг",d:"+1 підхід до A1 і B1. Запас 1–2 повтори."},
+  {n:"Обсяг",d:"+1 підхід до A1 і B1. Запас 1–2 повтори."},
+  {n:"Тести",d:"Звичайний обсяг. Наприкінці тижня — тести у вкладці «Прогрес»."},
+  {n:"Розвантаження",d:"Половина підходів. Тіло відновлюється і росте."}
+];
+const WD_SHORT = ["Нд","Пн","Вт","Ср","Чт","Пт","Сб"];
+const WD_FULL = ["неділя","понеділок","вівторок","середа","четвер","пʼятниця","субота"];
+const RR = ["SU","MO","TU","WE","TH","FR","SA"];
+
+/* ---------------- State & storage ---------------- */
+const LS = "pidhid-state-v1";
+const pad = n => String(n).padStart(2,"0");
+const key = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+const parseKey = k => { const [y,m,d]=k.split("-").map(Number); return new Date(y,m-1,d); };
+const mondayOf = d => { const x=new Date(d.getFullYear(),d.getMonth(),d.getDate()); const w=(x.getDay()+6)%7; x.setDate(x.getDate()-w); return x; };
+const defaults = () => ({v:1,start:key(mondayOf(new Date())),settings:{days:[1,2,4,6],time:"19:00"},logs:{},habits:{},tests:[],updated:0});
+function normalize(s){ const d=defaults(); s=s&&typeof s==="object"?s:{}; return {...d,...s,settings:{...d.settings,...(s.settings||{})},logs:s.logs||{},habits:s.habits||{},tests:Array.isArray(s.tests)?s.tests:[]}; }
+let state = defaults();
+try { const raw = localStorage.getItem(LS); if (raw) state = normalize(JSON.parse(raw)); } catch(e) {}
+
+let docRef = null, writing = Promise.resolve(), writeTimer = null, lastSent = "";
+function setSync(text, cls){ const el=document.getElementById("sync"); el.textContent=text; el.className="chip status"+(cls?" "+cls:""); }
+function save(){
+  state.updated = Date.now();
+  try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e) {}
+  if (!docRef) return;
+  clearTimeout(writeTimer);
+  writeTimer = setTimeout(() => {
+    const body = JSON.parse(JSON.stringify(state)); const s = JSON.stringify(body);
+    if (s === lastSent) return;
+    writing = writing.then(() => docRef.set(body)).then(() => { lastSent = s; setSync("Збережено","ok"); })
+      .catch(e => { setSync(e && e.code==="quota_exceeded" ? "Сховище переповнене" : "Лише на цьому пристрої","warn"); });
+  }, 700);
+}
+
+async function connect(){
+  const api = window.claude && window.claude.use ? window.claude : null;
+  if (!api) { setSync("Лише на цьому пристрої","warn"); return; }
+  try {
+    const [db, user] = await Promise.all([api.use("db"), api.use("user")]);
+    const uid = user ? await user.id() : null;
+    if (!db || !uid) { setSync("Лише на цьому пристрої","warn"); return; }
+    docRef = db.doc(`data/users/${uid}/state`);
+    let first = true;
+    const t = setTimeout(() => { if (first) setSync("Хмара недоступна, зберігаю тут","warn"); }, 10000);
+    docRef.onSnapshot(snap => {
+      if (snap.metadata.hasPendingWrites) return;
+      if (!snap.metadata.fromCache) clearTimeout(t);
+      if (!snap.exists) { if (first && !snap.metadata.fromCache) { first=false; save(); setSync("Збережено","ok"); } return; }
+      const remote = normalize(snap.data());
+      const changed = JSON.stringify(remote) !== JSON.stringify(state);
+      if (remote.updated >= state.updated && changed) {
+        state = remote; try { localStorage.setItem(LS, JSON.stringify(state)); } catch(e) {}
+        if (!document.activeElement || !/INPUT|SELECT/.test(document.activeElement.tagName)) render();
+      } else if (first && state.updated > remote.updated) { save(); }
+      if (!snap.metadata.fromCache) { first = false; setSync("Збережено","ok"); }
+    }, () => { clearTimeout(t); setSync("Лише на цьому пристрої","warn"); });
+  } catch(e) { setSync("Лише на цьому пристрої","warn"); }
+}
+
+/* ---------------- Helpers ---------------- */
+const today = () => { const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()); };
+const dayFor = d => { const i = state.settings.days.indexOf(d.getDay()); return i<0?null:i+1; };
+const weekNo = d => Math.max(1, Math.floor((mondayOf(d) - parseKey(state.start)) / (7*864e5)) + 1);
+const phaseOf = w => PHASES[(w-1)%5];
+const setsFor = (ex, w) => { const p=(w-1)%5; let s=ex.s; if (ex.x && (p===1||p===2)) s+=1; if (p===4) s=Math.ceil(s/2); return s; };
+const roundsFor = w => { const p=(w-1)%5; return p===4?2:4; };
+const fmtDate = d => d.toLocaleDateString("uk-UA",{day:"numeric",month:"long"});
+function lastLog(d, before){ return Object.keys(state.logs).filter(k=>k<before && state.logs[k].d===d && state.logs[k].done).sort().pop(); }
+function nextWorkout(from){ for (let i=1;i<=7;i++){ const x=new Date(from); x.setDate(x.getDate()+i); const d=dayFor(x); if (d) return {date:x,d}; } return null; }
+function toast(msg){ const t=document.createElement("div"); t.className="toast"; t.textContent=msg; document.body.appendChild(t); setTimeout(()=>t.remove(),1800); }
+const plate = (d, sm) => `<span class="plate p${d}${sm?" sm":""}">D${d}</span>`;
+
+let override = null; // manually chosen workout for today (not saved)
+
+/* ---------------- Views ---------------- */
+function viewToday(){
+  const t = today(), tk = key(t), w = weekNo(t), ph = phaseOf(w);
+  const sched = dayFor(t), d = override || sched;
+  const log = state.logs[tk] || null;
+  const mon = mondayOf(t);
+  let strip = "";
+  for (let i=0;i<7;i++){ const x=new Date(mon); x.setDate(x.getDate()+i); const k=key(x), sd=dayFor(x), lg=state.logs[k];
+    const dd = lg && lg.done ? lg.d : sd;
+    strip += `<div class="wd${k===tk?" today":""}"><span class="l">${WD_SHORT[x.getDay()]}</span><span class="dot${dd?" s"+dd:""}${lg&&lg.done?" done":""}">${lg&&lg.done?"✓":(dd?dd:"")}</span></div>`; }
+
+  let html = `
+  <section class="stack">
+    <div class="row between"><span class="eyebrow">${fmtDate(t)} · тиждень ${w}</span><span class="chip">${ph.n}</span></div>
+    <div class="week">${strip}</div>
+    <p class="small muted">${ph.d}</p>
+  </section>`;
+
+  if (!d) {
+    const nx = nextWorkout(t);
+    html += `<section class="card">
+      <div class="row"><span class="plate hollow">—</span><div><h2>Відпочинок</h2><p class="muted small">Наступне тренування: ${nx?`${WD_FULL[nx.date.getDay()]}, ${DAYS[nx.d].name} (D${nx.d})`:"не заплановано"}</p></div></div>
+      <p class="small">М'язи ростуть саме в дні відпочинку. Зробіть 5 хвилин на поставу і пройдіть 8–10 тис. кроків.</p>
+      <div class="row"><span class="small muted">Хочете тренуватись усе одно?</span></div>
+      <div class="seg">${[1,2,3,4].map(i=>`<button type="button" data-ov="${i}">${plate(i,1)}${DAYS[i].name.split(" ")[0]}</button>`).join("")}</div>
+    </section>`;
+  } else {
+    html += workoutCard(d, tk, w, log, sched);
+  }
+  html += habitsCard(tk);
+  return html;
+}
+
+function workoutCard(d, tk, w, log, sched){
+  const D = DAYS[d], prevK = lastLog(d, tk), prev = prevK ? state.logs[prevK] : null;
+  const minimal = !!(log && log.min);
+  const exs = D.circuit ? D.ex : (minimal ? D.ex.filter(e=>e.t==="A1"||e.t==="A2") : D.ex);
+  let body = "";
+  if (D.circuit) {
+    const R = roundsFor(w), done = (log && log.rounds) || 0;
+    body += `<ul class="plain">${D.ex.map(e=>`<li><b class="mono">${e.r}${e.u?" "+e.u:""}</b> ${e.n}</li>`).join("")}</ul>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Раунди · відпочинок ${D.rest}</span>
+    <div class="row">${Array.from({length:R},(_,i)=>`<button type="button" class="btn${i<done?" primary":""}" data-round="${i+1}" aria-pressed="${i<done}">${i+1}</button>`).join("")}</div></div>`;
+  } else {
+    body += exs.map(e => {
+      const n = setsFor(e, w), vals = (log && log.sets && log.sets[e.t]) || [], pv = (prev && prev.sets && prev.sets[e.t]) || [];
+      const inputs = Array.from({length:n},(_,i)=>`<label class="set"><input type="number" inputmode="numeric" min="0" max="999" id="s-${d}-${e.t}-${i}" data-ex="${e.t}" data-i="${i}" value="${vals[i]??""}" placeholder="${pv[i]??"–"}" class="${vals[i]!=null&&vals[i]!==""?"filled":""}" aria-label="${e.n}, підхід ${i+1}"><span>${i+1}</span></label>`).join("");
+      return `<div class="ex">
+        <div class="exhead"><span class="tag">${e.t}</span><div class="stack" style="gap:2px;min-width:0"><span class="exname">${e.n}</span><span class="target">${n} × ${e.r}${e.u?" "+e.u:""}${pv.length?` · минулого разу ${pv.filter(v=>v!==""&&v!=null).join("/")}`:""}</span></div></div>
+        <div class="sets">${inputs}</div>
+        <details class="tip"><summary>Техніка${e.pg?" і прогресія":""}</summary><p>${e.tip}</p>${e.pg?`<p class="ladder">${e.pg.map((p,i)=>`${i?"<i>→</i>":""}<span>${p}</span>`).join("")}</p>`:""}</details>
+      </div>`;
+    }).join("");
+  }
+  const done = log && log.done;
+  return `<section class="card">
+    <div class="row" style="flex-wrap:nowrap">${plate(d)}<div style="min-width:0"><h2>${D.name}</h2><p class="muted small">${D.sub} · ~25 хв${override&&override!==sched?" · позапланово":""}</p></div></div>
+    <details class="tip"><summary>Розминка, 3 хв</summary><ul class="plain small">${WARMUP.map(x=>`<li>${x}</li>`).join("")}</ul></details>
+    ${!D.circuit?`<label class="check${minimal?" done":""}" style="border:0;padding:0"><input type="checkbox" id="minimal" ${minimal?"checked":""}><span><span class="t" style="text-decoration:none;color:inherit">Правило мінімуму</span><br><span class="small muted">Поганий день? Лише A1 + A2, 10 хв. Головне — не пропустити.</span></span></label>`:""}
+    <div>${body}</div>
+    <div class="restbar"><span class="small muted">Відпочинок:</span>${[60,75,90].map(s=>`<button type="button" class="btn" data-rest="${s}">${s} с</button>`).join("")}</div>
+    <details class="tip"><summary>Розтяжка, 3 хв</summary><ul class="plain small">${COOLDOWN.map(x=>`<li>${x}</li>`).join("")}</ul></details>
+    <button type="button" class="btn block ${done?"":"primary"}" id="finish">${done?"Виконано ✓ · скасувати":"Завершити тренування"}</button>
+  </section>`;
+}
+
+function habitsCard(tk){
+  const h = state.habits[tk] || {}, water = h.water||0;
+  const items = [["steps","8–10 тис. кроків"],["protein","130–150 г білка"],["posture","5 хв на поставу"],["kitchen","Кухня зачинена о 22:00"]];
+  return `<section class="card">
+    <div class="row between"><h3>Звички дня</h3><span class="chip${water>=10?" ok":""}">${(water*0.25).toLocaleString("uk-UA",{maximumFractionDigits:2})} / 2,5 л</span></div>
+    <div class="stack" style="gap:6px"><span class="eyebrow">Вода, склянка 250 мл</span>
+      <div class="glasses">${Array.from({length:10},(_,i)=>`<button type="button" class="glass${i<water?" full":""}" data-water="${i+1}" aria-label="${i+1} склянок"></button>`).join("")}</div></div>
+    <div>${items.map(([k,t])=>`<label class="check${h[k]?" done":""}"><input type="checkbox" data-habit="${k}" ${h[k]?"checked":""}><span class="t">${t}</span></label>`).join("")}</div>
+    <details class="tip"><summary>Вправи на поставу</summary><ul class="plain small">${POSTURE.map(x=>`<li>${x}</li>`).join("")}</ul></details>
+  </section>`;
+}
+
+function viewPlan(){
+  const w = weekNo(today());
+  return `
+  <section class="stack"><p class="muted">4 тренування на тиждень по ~25 хв. Вправи йдуть суперсетами: A1 → A2 → відпочинок, потім B1 → B2. Цикл — 5 тижнів, зараз тиждень ${w}.</p></section>
+  <section class="card"><h3>Цикл навантаження</h3>
+    <div class="tbl"><table><thead><tr><th>Тиждень</th><th>Фаза</th><th>Що робити</th></tr></thead><tbody>
+    ${PHASES.map((p,i)=>`<tr${(w-1)%5===i?' style="font-weight:700"':""}><td class="mono">${i+1}</td><td>${p.n}</td><td style="white-space:normal">${p.d}</td></tr>`).join("")}
+    </tbody></table></div>
+    <p class="small muted">Правило прогресу: зробили верхню межу повторів у всіх підходах — переходьте на складнішу варіацію або додайте рюкзак.</p>
+  </section>
+  ${[1,2,3,4].map(d=>{ const D=DAYS[d], wd=state.settings.days[d-1]; return `<section class="card">
+    <div class="row" style="flex-wrap:nowrap">${plate(d)}<div><h3>${D.name}</h3><p class="small muted">${WD_FULL[wd]} · ${D.sub} · відпочинок ${D.rest}</p></div></div>
+    <div class="tbl"><table><tbody>${D.ex.map(e=>`<tr><td class="mono">${e.t}</td><td style="white-space:normal">${e.n}</td><td class="num">${D.circuit?"":e.s+" × "}${e.r}${e.u?" "+e.u:""}</td></tr>`).join("")}</tbody></table></div>
+    ${D.circuit?`<p class="small muted">${D.rounds} раунди, на розвантаженні — 2.</p>`:""}
+  </section>`;}).join("")}
+  <section class="card"><h3>Інвентар</h3><ul class="plain small">
+    <li><b>Турнік у дверний проріз</b> — обов'язково, без нього немає спини і біцепса.</li>
+    <li><b>Набір гумових петель</b> — допомога в підтягуваннях і тяги для постави.</li>
+    <li><b>Упори для віджимань</b> — бажано.</li>
+    <li><b>Рюкзак з книжками</b>, згодом жилет-обтяжувач — для додаткової ваги.</li></ul></section>`;
+}
+
+function chart(rows, field, label, unit){
+  const pts = rows.filter(r=>r[field]!=null && r[field]!=="").map(r=>({x:parseKey(r.date).getTime(), y:+r[field]}));
+  if (pts.length < 2) return `<div class="note small">${label}: потрібно щонайменше 2 заміри для графіка.</div>`;
+  const W=320,H=130,L=34,R=10,T=12,B=22;
+  const xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
+  let x0=Math.min(...xs), x1=Math.max(...xs); let y0=Math.min(...ys), y1=Math.max(...ys);
+  const padY=(y1-y0)*0.15||1; y0-=padY; y1+=padY;
+  const sx=x=>L+(x-x0)/(x1-x0||1)*(W-L-R), sy=y=>T+(1-(y-y0)/(y1-y0))*(H-T-B);
+  const path=pts.map((p,i)=>`${i?"L":"M"}${sx(p.x).toFixed(1)},${sy(p.y).toFixed(1)}`).join("");
+  const area=`${path}L${sx(pts[pts.length-1].x).toFixed(1)},${H-B}L${sx(pts[0].x).toFixed(1)},${H-B}Z`;
+  const ticks=[y0+padY, (y0+y1)/2, y1-padY].map(v=>Math.round(v*10)/10);
+  const last=pts[pts.length-1], first=pts[0], diff=Math.round((last.y-first.y)*10)/10;
+  const d0=new Date(x0), d1=new Date(x1);
+  return `<div class="stack" style="gap:4px"><div class="row between"><span class="eyebrow">${label}</span><span class="mono small">${last.y} ${unit} <span class="muted">(${diff>0?"+":""}${diff})</span></span></div>
+  <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="${label}">
+    ${ticks.map(v=>`<line x1="${L}" x2="${W-R}" y1="${sy(v)}" y2="${sy(v)}" stroke="var(--line)" stroke-width="1"/><text x="${L-6}" y="${sy(v)+3}" text-anchor="end">${v}</text>`).join("")}
+    <path d="${area}" fill="var(--fg)" fill-opacity=".07"/>
+    <path d="${path}" fill="none" stroke="var(--fg)" stroke-width="2" stroke-linejoin="round"/>
+    ${pts.map(p=>`<circle cx="${sx(p.x)}" cy="${sy(p.y)}" r="${p===last?4:2.5}" fill="${p===last?"var(--fg)":"var(--surface)"}" stroke="var(--fg)" stroke-width="1.5"/>`).join("")}
+    <text x="${L}" y="${H-6}">${pad(d0.getDate())}.${pad(d0.getMonth()+1)}</text><text x="${W-R}" y="${H-6}" text-anchor="end">${pad(d1.getDate())}.${pad(d1.getMonth()+1)}</text>
+  </svg></div>`;
+}
+
+function viewProgress(){
+  const t=today(), mon=mondayOf(t), tests=[...state.tests].sort((a,b)=>a.date<b.date?-1:1);
+  const doneKeys = Object.keys(state.logs).filter(k=>state.logs[k].done);
+  const thisWeek = doneKeys.filter(k=>parseKey(k)>=mon).length;
+  let streak=0; for (let i=1;i<60;i++){ const m=new Date(mon); m.setDate(m.getDate()-7*i); const e=new Date(m); e.setDate(e.getDate()+7);
+    const n=doneKeys.filter(k=>{const x=parseKey(k);return x>=m&&x<e;}).length; if (n>=3) streak++; else break; }
+  if (thisWeek>=3) streak++;
+  const last = tests[tests.length-1];
+  const dueTest = !last || (t - parseKey(last.date)) >= 26*864e5;
+  const f = (id,lab,ph,step) => `<label class="f" for="${id}">${lab}<input id="${id}" type="number" inputmode="decimal" step="${step||1}" min="0" placeholder="${ph}"></label>`;
+  return `
+  <section class="stats">
+    <div class="stat"><b class="mono">${thisWeek}/4</b><span>тренувань цього тижня</span></div>
+    <div class="stat"><b class="mono">${doneKeys.length}</b><span>усього тренувань</span></div>
+    <div class="stat"><b class="mono">${streak}</b><span>тижнів поспіль ≥3</span></div>
+  </section>
+  <section class="card">
+    <div class="row between"><h3>Тести і заміри</h3><span class="chip${dueTest?" warn":" ok"}">${dueTest?(last?"Час повторити":"Почніть зі стартових"):"Наступні через "+Math.ceil((28*864e5-(t-parseKey(last.date)))/864e5)+" дн."}</span></div>
+    <p class="small muted">Раз на 4 тижні. Вага — зранку натщесерце, талія — на рівні пупка. Плюс фото спереду, збоку і ззаду при однаковому світлі.</p>
+    <form id="testform" class="stack">
+      <div class="grid2">
+        ${f("t-push","Віджимання, макс","12")}${f("t-pull","Підтягування, макс","0")}
+        ${f("t-hang","Вис на турніку, с","30")}${f("t-plank","Планка, с","60")}
+        ${f("t-squat","Присідання, макс","30")}${f("t-weight","Вага, кг","70","0.1")}
+        ${f("t-waist","Талія, см","80","0.5")}
+        <label class="f" for="t-date">Дата<input id="t-date" type="date" value="${key(t)}"></label>
+      </div>
+      <button class="btn primary block" type="submit">Зберегти заміри</button>
+    </form>
+  </section>
+  ${tests.length?`<section class="card"><h3>Динаміка</h3>${chart(tests,"weight","Вага","кг")}${chart(tests,"waist","Талія","см")}${chart(tests,"push","Віджимання","повт.")}${chart(tests,"pull","Підтягування","повт.")}</section>
+  <section class="card"><h3>Історія</h3><div class="tbl"><table><thead><tr><th>Дата</th><th class="num">Відж.</th><th class="num">Підт.</th><th class="num">Вис</th><th class="num">Планка</th><th class="num">Прис.</th><th class="num">Вага</th><th class="num">Талія</th><th></th></tr></thead><tbody>
+  ${[...tests].reverse().map(r=>`<tr><td class="mono">${r.date.slice(8)}.${r.date.slice(5,7)}</td>${["push","pull","hang","plank","squat","weight","waist"].map(k=>`<td class="num">${r[k]??"–"}</td>`).join("")}<td><button type="button" class="chip" data-deltest="${r.id}" aria-label="Видалити замір">×</button></td></tr>`).join("")}
+  </tbody></table></div></section>`:`<section class="note">Тут з'являться графіки ваги, талії, віджимань і підтягувань після перших двох замірів.</section>`}`;
+}
+
+function viewFood(){
+  return `
+  <section class="stats">
+    <div class="stat"><b class="mono">2150</b><span>ккал на день</span></div>
+    <div class="stat"><b class="mono">140 г</b><span>білка</span></div>
+    <div class="stat"><b class="mono">2,5 л</b><span>води</span></div>
+  </section>
+  <section class="card"><h3>Чому так</h3>
+    <p class="small">Ваша ціль — рекомпозиція: мінус жир, плюс м'язи. Підтримка ≈ 2400 ккал, тож легкий дефіцит у 200–300 ккал. Вага падатиме повільно, до ~67–68 кг, а талія — помітно. Головний показник — талія, сила і фото, а не ваги.</p>
+    <div class="tbl"><table><tbody>
+      <tr><td>Білок</td><td class="num">130–150 г</td><td class="muted small" style="white-space:normal">≈ 2 г на кг</td></tr>
+      <tr><td>Жири</td><td class="num">60–70 г</td><td></td></tr>
+      <tr><td>Вуглеводи</td><td class="num">230–260 г</td><td class="muted small" style="white-space:normal">більше в дні тренувань</td></tr>
+    </tbody></table></div></section>
+  <section class="card"><h3>Приклад дня</h3>
+    <div class="tbl"><table><tbody>
+      <tr><td>Сніданок</td><td style="white-space:normal">3 яйця, 2 скибки цільнозернового хліба, овочі</td></tr>
+      <tr><td>Обід</td><td style="white-space:normal">150 г курки, 80 г гречки або рису (сухої), салат з ложкою олії</td></tr>
+      <tr><td>Перекус</td><td style="white-space:normal">200 г грецького йогурту або кисломолочного сиру, фрукт</td></tr>
+      <tr><td>Вечеря</td><td style="white-space:normal">150 г риби або яловичини, картопля, овочі</td></tr>
+      <tr><td>Пізно ввечері</td><td style="white-space:normal">150 г кисломолочного сиру — замість солоних снеків</td></tr>
+    </tbody></table></div></section>
+  <section class="card"><h3>Пізні солоні перекуси</h3><ul class="plain small">
+    <li>Заплануйте вечірній перекус наперед: сир, йогурт або протеїн.</li>
+    <li>Чипси не тримайте вдома. Заміна: попкорн без масла, солоні огірки, 30 г горіхів, в'ялене м'ясо.</li>
+    <li>«Кухня зачинена» о 22:00, після цього — чистити зуби.</li></ul></section>`;
+}
+
+function gcal(title, details, start, mins, rrule){
+  const f = d => `${d.getFullYear()}${pad(d.getMonth()+1)}${pad(d.getDate())}T${pad(d.getHours())}${pad(d.getMinutes())}00`;
+  const end = new Date(start.getTime()+mins*60000);
+  let tz = "Europe/Kyiv"; try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || tz; } catch(e) {}
+  return "https://calendar.google.com/calendar/render?" + new URLSearchParams({action:"TEMPLATE",text:title,details,dates:`${f(start)}/${f(end)}`,ctz:tz,recur:"RRULE:"+rrule}).toString();
+}
+function nextAt(weekdays, hhmm){
+  const [h,m] = hhmm.split(":").map(Number), n = new Date();
+  for (let i=0;i<8;i++){ const x=new Date(n.getFullYear(),n.getMonth(),n.getDate()+i,h,m); if (weekdays.includes(x.getDay()) && x>n) return x; }
+  return new Date(n.getFullYear(),n.getMonth(),n.getDate()+1,h,m);
+}
+function viewRemind(){
+  const s = state.settings, days = [...new Set(s.days)];
+  const train = gcal("Тренування · Підхід", "Калістеніка ~25 хв. Відкрий застосунок «Підхід» → Сьогодні.", nextAt(days,s.time), 30, "FREQ=WEEKLY;BYDAY="+days.map(d=>RR[d]).join(","));
+  const posture = gcal("5 хв на поставу + вода", "Розведення рук з петлею 2×15, розтяжка грудей і згиначів стегна. Випий склянку води.", nextAt([1,2,3,4,5],"13:00"), 10, "FREQ=WEEKLY;BYDAY=MO,TU,WE,TH,FR");
+  const kitchen = gcal("Кухня зачинена о 22:00", "Вечірній перекус — сир або йогурт. Без солоних снеків.", nextAt([0,1,2,3,4,5,6],"21:45"), 15, "FREQ=DAILY");
+  const tests = gcal("Тести і заміри · Підхід", "Віджимання, підтягування, планка, присідання, вага натщесерце, талія, фото. Запиши у вкладку «Прогрес».", nextAt([0],"09:00"), 20, "FREQ=WEEKLY;INTERVAL=4;BYDAY=SU");
+  const dup = s.days.length !== new Set(s.days).size;
+  return `
+  <section class="card"><h3>Розклад тренувань</h3>
+    <div class="grid2">
+      ${[1,2,3,4].map(d=>`<label class="f" for="sd-${d}">D${d} · ${DAYS[d].name}<select id="sd-${d}" data-sday="${d}">${[1,2,3,4,5,6,0].map(w=>`<option value="${w}" ${s.days[d-1]===w?"selected":""}>${WD_FULL[w]}</option>`).join("")}</select></label>`).join("")}
+      <label class="f" for="stime">Час тренування<input id="stime" type="time" value="${s.time}"></label>
+    </div>
+    ${dup?`<p class="chip warn">Два тренування в один день — оберіть різні дні.</p>`:""}
+  </section>
+  <section class="card"><h3>Нагадування на iPhone</h3>
+    <p class="small muted">Сторінка в браузері не може сама надсилати пуш-сповіщення, тому нагадування живуть у календарі — так вони спрацюють навіть із закритим застосунком. Кожна кнопка відкриває Google Календар з уже заповненою повторюваною подією; натисніть «Зберегти».</p>
+    <div class="stack" style="gap:8px">
+      <a class="btn primary block" href="${train}" target="_blank" rel="noopener">Тренування: ${days.map(d=>WD_SHORT[d]).join(", ")} о ${s.time}</a>
+      <a class="btn block" href="${posture}" target="_blank" rel="noopener">Постава + вода: будні о 13:00</a>
+      <a class="btn block" href="${kitchen}" target="_blank" rel="noopener">«Кухня зачинена»: щодня о 21:45</a>
+      <a class="btn block" href="${tests}" target="_blank" rel="noopener">Тести і заміри: раз на 4 тижні</a>
+    </div>
+    <div class="note small">Щоб події з Google Календаря дзвонили на iPhone: Параметри → Календар → Облікові записи → додайте Google. Або встановіть застосунок Google Календар і дозвольте сповіщення. Змінили розклад вище — додайте подію тренувань заново, а стару видаліть.</div>
+  </section>
+  <section class="card"><h3>Встановити на iPhone</h3>
+    <ol class="steps small">
+      <li>Відкрийте посилання на цей застосунок у Safari і увійдіть у claude.ai.</li>
+      <li>Натисніть «Поділитися» (квадрат зі стрілкою) → «На початковий екран».</li>
+      <li>Назвіть «Підхід» → «Додати». Іконка з'явиться поруч з іншими програмами.</li>
+    </ol>
+    <p class="small muted">Дані зберігаються у вашому акаунті claude.ai, тож однакові на телефоні й комп'ютері.</p>
+  </section>`;
+}
+
+/* ---------------- Router & events ---------------- */
+const TABS = {today:["Сьогодні",viewToday],plan:["План",viewPlan],progress:["Прогрес",viewProgress],food:["Харчування",viewFood],remind:["Нагадування",viewRemind]};
+function current(){ const h=(location.hash||"").slice(1); return TABS[h]?h:"today"; }
+function render(){
+  const tab = current();
+  document.getElementById("hdr").textContent = TABS[tab][0];
+  document.getElementById("view").innerHTML = TABS[tab][1]();
+  document.querySelectorAll("nav.tabs a").forEach(a=>a.setAttribute("aria-current", a.dataset.tab===tab?"page":"false"));
+}
+window.addEventListener("hashchange", ()=>{ render(); window.scrollTo(0,0); });
+
+const view = document.getElementById("view");
+function logFor(tk, d){ if (!state.logs[tk] || state.logs[tk].d!==d) state.logs[tk] = {d,sets:{},done:false,min:false,rounds:0}; return state.logs[tk]; }
+function curDay(){ const t=today(); return override || dayFor(t); }
+
+view.addEventListener("input", e => {
+  const el = e.target, tk = key(today());
+  if (el.dataset.ex) {
+    const lg = logFor(tk, curDay()); const arr = lg.sets[el.dataset.ex] = lg.sets[el.dataset.ex] || [];
+    arr[+el.dataset.i] = el.value === "" ? "" : Math.max(0, Math.min(999, Math.round(+el.value)));
+    el.classList.toggle("filled", el.value !== ""); save();
+  }
+});
+view.addEventListener("change", e => {
+  const el = e.target, tk = key(today());
+  if (el.id === "minimal") { logFor(tk, curDay()).min = el.checked; save(); render(); }
+  else if (el.dataset.habit) { const h = state.habits[tk] = state.habits[tk] || {}; h[el.dataset.habit] = el.checked; el.closest(".check").classList.toggle("done", el.checked); save(); }
+  else if (el.dataset.sday) { state.settings.days[+el.dataset.sday-1] = +el.value; save(); render(); }
+  else if (el.id === "stime") { state.settings.time = el.value || "19:00"; save(); render(); }
+});
+view.addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const tk = key(today());
+  if (b.dataset.ov) { override = +b.dataset.ov; render(); }
+  else if (b.dataset.water) { const h = state.habits[tk] = state.habits[tk] || {}; const n=+b.dataset.water; h.water = h.water===n ? n-1 : n; save(); render(); }
+  else if (b.dataset.round) { const lg = logFor(tk, curDay()); const n=+b.dataset.round; lg.rounds = lg.rounds===n ? n-1 : n; save(); render(); startTimer(90); }
+  else if (b.dataset.rest) { startTimer(+b.dataset.rest); }
+  else if (b.id === "finish") { const lg = logFor(tk, curDay()); lg.done = !lg.done; save(); render(); if (lg.done) toast("Тренування збережено"); }
+  else if (b.dataset.deltest) { state.tests = state.tests.filter(t=>t.id!==b.dataset.deltest); save(); render(); }
+});
+view.addEventListener("submit", e => {
+  if (e.target.id !== "testform") return; e.preventDefault();
+  const g = id => { const v=document.getElementById(id).value; return v===""?null:+v; };
+  const row = {id:Date.now().toString(36), date:document.getElementById("t-date").value || key(today()), push:g("t-push"), pull:g("t-pull"), hang:g("t-hang"), plank:g("t-plank"), squat:g("t-squat"), weight:g("t-weight"), waist:g("t-waist")};
+  if (["push","pull","hang","plank","squat","weight","waist"].every(k=>row[k]==null)) { toast("Заповніть хоча б одне поле"); return; }
+  state.tests = state.tests.filter(t=>t.date!==row.date).concat(row); save(); render(); toast("Заміри збережено");
+});
+
+/* ---------------- Rest timer ---------------- */
+let tEnd = 0, tInt = null, actx = null;
+const timerEl = document.getElementById("timer"), clockEl = document.getElementById("clock");
+function beep(){ try { actx = actx || new (window.AudioContext||window.webkitAudioContext)(); [0,0.25,0.5].forEach(o=>{ const os=actx.createOscillator(), g=actx.createGain(); os.frequency.value=880; g.gain.value=0.15; os.connect(g); g.connect(actx.destination); os.start(actx.currentTime+o); os.stop(actx.currentTime+o+0.15); }); } catch(e) {} try { navigator.vibrate && navigator.vibrate([200,100,200]); } catch(e) {} }
+function tick(){
+  const left = Math.max(0, Math.round((tEnd - Date.now())/1000));
+  clockEl.textContent = `${pad(Math.floor(left/60))}:${pad(left%60)}`;
+  if (left === 0) { clearInterval(tInt); tInt=null; timerEl.classList.add("end"); clockEl.textContent = "Наступний підхід"; beep(); setTimeout(()=>{ if(!tInt) timerEl.hidden=true; }, 4000); }
+}
+function startTimer(s){
+  try { actx = actx || new (window.AudioContext||window.webkitAudioContext)(); if (actx.state==="suspended") actx.resume(); } catch(e) {}
+  tEnd = Date.now() + s*1000; timerEl.hidden = false; timerEl.classList.remove("end");
+  clearInterval(tInt); tInt = setInterval(tick, 250); tick();
+}
+document.getElementById("tplus").onclick = () => { if (tInt) tEnd += 15000; else startTimer(15); tick(); };
+document.getElementById("tstop").onclick = () => { clearInterval(tInt); tInt=null; timerEl.hidden = true; };
+
+render();
+setTimeout(connect, 0);
+})();
+</script>
+
+</body>
+</html>
